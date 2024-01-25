@@ -1,0 +1,50 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <h1 class="page-header">Users</h1>
+    <nav aria-label="Page navigation" class="w-100 d-flex justify-content-center bg-transparent mt-3" th:if="${page != null || pageSize != null}">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link bg-black border border-light text-light" th:href="@{'/users?page='+${page - 1}}" th:if="${page>0}"><i class="fa-solid fa-angle-left"></i></a></li>
+            <li class="page-item"><a class="page-link bg-black border border-light text-light disabled" th:href="@{'/users?page='+${page - 1}}" th:if="${page==0}" ><i class="fa-solid fa-angle-left"></i></a></li>
+            <li class="page-item"><a class="page-link bg-black border border-light text-light" th:href="@{'/users?page='+${page + 1}}" th:if="${(usersCount.floatValue()/pageSize.floatValue()) > (page.floatValue() + (1.0))}"><i class="fa-solid fa-angle-right"></i></a></li>
+            <li class="page-item"><a class="page-link bg-black border border-light text-light disabled" th:href="@{'/users?page='+${page + 1}}"  th:if="${(usersCount.floatValue()/pageSize.floatValue()) <= (page.floatValue() + 1.0)}"><i class="fa-solid fa-angle-right"></i></a></li>
+        </ul>
+    </nav>
+
+    <div class="d-flex justify-content-center">
+        <form class="input-group mb-3" th:action="@{/users/}" method="post" style="max-width: 540px;">
+            <a class="btn btn-light" th:href="@{/users/}"><i class="fa-solid fa-users"></i></a>
+            <input type="text" class="form-control bg-transparent border border-light text-light" name="keyword" placeholder="Search" th:value="${keyword}" >
+            <button class="btn btn-outline-light" type="submit" id="button-addon2"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+
+    <div class="d-flex justify-content-center  row-cols-1 row-cols-lg-3" th:each="user, iter : ${users}">
+        <div class="card bg-dark border border-light mb-3" style="max-width: 540px;">
+            <a class="row g-0" th:href="'/users/' + ${user.getId()}" style="text-decoration: none">
+                <div class="user-photo-container col-md-2 d-flex align-items-center">
+                    <img th:if="${(pictureModels[iter.index].getContent() != null)}" th:src="${'data:image/'+ pictureModels[iter.index].getPicFormat() +';base64,' + pictureModels[iter.index].getContent()}" class="user-photo border border-5 border-dark rounded-circle not-draggable" >
+                    <img th:if="${(pictureModels[iter.index].getContent() == null)}" src="/images/default-profile.png" class="user-photo border border-5 border-dark rounded-circle not-draggable" >
+                </div>
+                <div class="col-md-8 d-flex align-items-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-light main-font-light" th:text="${user.getUsername()}" ></h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+<!--        <div class="card " style="width: 18rem;" th:each="user, iter : ${users}">-->
+<!--            <a class="card-body" th:href="'/users/' + ${user.getId()}" style="text-decoration: none">-->
+<!--                <div class="user-photo-container">-->
+<!--                    <img th:if="${(pictureModels[iter.index].getContent() != null)}" th:src="${'data:image/'+ pictureModels[iter.index].getPicFormat() +';base64,' + pictureModels[iter.index].getContent()}" class="user-photo border border-5 border-dark rounded-circle not-draggable" >-->
+<!--                    <img th:if="${(pictureModels[iter.index].getContent() == null)}" src="/images/default-profile.png" class="user-photo border border-5 border-dark rounded-circle not-draggable" >-->
+<!--                </div>-->
+<!--                <h5 class="card-title text-light main-font-light" th:text="${user.getUsername()}" ></h5>-->
+<!--            </a>-->
+<!--        </div>-->
+    </div>
+
+</div>

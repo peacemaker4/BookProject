@@ -1,0 +1,145 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+
+
+
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center row g-4 py-5 row-cols-1 row-cols-lg-3">
+            <div th:if="${bookCover == null}" class="book-cover rounded bg-gradient-4 d-flex justify-content-center align-items-center">
+                <form id="bookCoverForm" method="POST" th:action="@{'/books-requests/' + ${book.getId()} + '/add/cover'}" enctype="multipart/form-data">
+                    <input id="coverInput" type="file" name="file" hidden />
+                    <button type="button" id="coverBtn" class="big-btn">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </form>
+            </div>
+            <div th:if="${bookCover != null}" class="card bg-transparent rounded align-items-center">
+                <img class="book-cover rounded" th:src="${'data:image/'+ picFormat +';base64,' + bookCover}">
+                <div class="d-flex justify-content-center mt-3">
+                    <form method="POST" th:action="@{'/books-requests/' + ${book.getId()} + '/delete/cover'}">
+                        <button class="btn btn-outline-danger me-1">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </form>
+                    <form id="bookCoverForm" method="POST" th:action="@{'/books-requests/' + ${book.getId()} + '/add/cover'}" enctype="multipart/form-data">
+                        <input id="coverInput" type="file" name="file" hidden />
+                        <button type="button" id="coverBtn" class="btn btn-outline-info ms-1">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <form method="POST" th:action="@{'/books-requests/' + ${book.getId()} + '/edit/'}" th:object="${bookModel}">
+                <div class="card bg-dark align-items-center rounded p-3">
+                    <div class="mb-3 text-center">
+                        <label for="titleInput" class="form-label text-light">Book Title:</label>
+                        <input type="text" class="form-control book-title bg-transparent text-light" th:field="*{name}" name="name" id="titleInput" value="Crime and punishment">
+                    </div>
+                    <div class="form-group mb-3 text-center">
+                        <label for="descriptionInput" class="form-label text-light">Description:</label>
+                        <textarea class="form-control book-description bg-transparent text-light" th:field="*{description}" name="description" id="descriptionInput" rows="5" cols="50">
+                        </textarea>
+                    </div>
+                </div>
+                <div class="card bg-dark rounded mt-3 p-3">
+                    <span class="text-light text-center">Authors:</span>
+                    <div class="form-group mb-3 mt-3">
+                        <select name="authors_ids" id="authors_ids" th:field="*{authors_ids}" class="form-control selectpicker input-required" data-live-search="true" multiple required>
+                            <option th:each="author : ${authors}" th:value="${author.getId()}" th:text="${author.getFullName()}" th:data-tokens="${author.getFullName().toLowerCase()}"></option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Enter authors
+                        </div>
+                    </div>
+                    <div class="form-floating form-group mb-3">
+                        <input type="text" class="form-control bg-transparent text-light" id="publisherInput" name="publisher" th:field="*{publisher}" placeholder="Publisher" required>
+                        <label for="publisherInput" class="text-light"><i class="fa-solid fa-building"></i> Publisher</label>
+                        <div class="invalid-feedback">
+                            Enter publisher
+                        </div>
+                    </div>
+                </div>
+                <div class="card bg-dark rounded mt-3 p-3">
+                    <span class="text-light text-center">Additional information:</span>
+                    <div class="form-floating form-group mb-3 mt-3">
+                        <input type="text" class="form-control bg-transparent text-light" id="pagesInput" name="pages" th:field="*{pages}" placeholder="Publisher" required>
+                        <label for="pagesInput" class="text-light">
+                            <i class="fa-solid fa-book-open"></i>
+                            Pages
+                        </label>
+                        <div class="invalid-feedback">
+                            Enter pages
+                        </div>
+                    </div>
+                    <div class="form-floating form-group mb-3">
+                        <input type="text" class="form-control bg-transparent text-light" id="yearInput" name="year" th:field="*{year}" placeholder="Publisher" required>
+                        <label for="yearInput" class="text-light">
+                            <i class="fa-solid fa-calendar-day"></i>
+                            Year
+                        </label>
+                        <div class="invalid-feedback">
+                            Enter year
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-dark rounded mt-3 p-3">
+                    <span class="text-light text-center">Tags:</span>
+                    <div class="form-group mb-3 mt-3">
+                        <select name="tags_ids" id="tags_ids"  th:field="*{tags_ids}" class="form-control selectpicker input-required" data-live-search="true" multiple required>
+                            <option th:each="tag : ${tags}" th:value="${tag.getId()}" th:text="${tag.getName()}" th:data-tokens="${tag.getName().toLowerCase()}"></option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Enter tags
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mt-3">
+                    <button class="btn btn-outline-purple rounded" type="submit">Submit <i class="fa-solid fa-check"></i></button>
+                </div>
+
+            </form>
+            <div class="card bg-dark rounded mt-4 p-3">
+                <span class="text-light text-center">Book file:</span>
+                <form id="fileForm" method="post" th:action="'/books-requests/' + ${book.getId()} + '/add/file'"  enctype="multipart/form-data">
+                    <div class="form-group mt-3">
+                        <input name="file" type="file" id="fileInput" class="form-control">
+                        <div class="invalid-feedback">
+                            Enter file
+                        </div>
+                    </div>
+                </form>
+                <span>
+                    <span class="text-success" th:if="${book.getFile() != ''}">Contains file <i class="fa-solid fa-file"></i></span>
+                    <form class="mt-3" th:if="${book.getFile() != ''}" method="post" th:action="'/books-requests/' + ${book.getId()} + '/delete/file'">
+                        <button class="btn btn-danger rounded-pill">Delete <i class="fa-solid fa-trash-can-arrow-up"></i></button>
+                    </form>
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        $("#coverBtn").click(function (){
+            $("#coverInput").click();
+        });
+        $("#coverInput").change(function() {
+            $("#bookCoverForm").submit();
+        });
+        $("#fileInput").change(function() {
+            $("#fileForm").submit();
+        });
+    </script>
+    <script>
+        $(function() {
+            $('.selectpicker').selectpicker();
+        });
+    </script>
+
+</div>

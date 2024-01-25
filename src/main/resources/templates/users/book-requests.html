@@ -1,0 +1,54 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <h1 class="page-header pt-3">Book requests <i class="fa-solid fa-file-pen"></i> </h1>
+    <nav aria-label="Page navigation" class="w-100 d-flex justify-content-center bg-transparent pt-3" th:if="${page != null || pageSize != null}">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link bg-black border border-light text-light" th:href="@{'/users/'+ ${user.getId()} +'/books-requests?page='+${page - 1}}" th:if="${page>0}"><i class="fa-solid fa-angle-left"></i></a></li>
+            <li class="page-item"><a class="page-link bg-black border border-light text-light disabled" th:href="@{'/users/'+ ${user.getId()} +'/books-requests?page='+${page - 1}}" th:if="${page==0}" ><i class="fa-solid fa-angle-left"></i></a></li>
+            <li class="page-item"><a class="page-link bg-black border border-light text-light" th:href="@{'/users/'+ ${user.getId()} +'/books-requests?page='+${page + 1}}" th:if="${(booksCount.floatValue()/pageSize.floatValue()) > (page.floatValue() + (1.0))}"><i class="fa-solid fa-angle-right"></i></a></li>
+            <li class="page-item"><a class="page-link bg-black border border-light text-light disabled" th:href="@{'/users/'+ ${user.getId()} +'/books-requests?page='+${page + 1}}"  th:if="${(booksCount.floatValue()/pageSize.floatValue()) <= (page.floatValue() + 1.0)}"><i class="fa-solid fa-angle-right"></i></a></li>
+        </ul>
+    </nav>
+    <ul class="nav nav-tabs d-flex justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link text-muted"  th:href="'/users/' + ${user.getId()} +'/books'">Posted <i class="fa-solid fa-check"></i></a>
+        </li>
+        <li th:if="${is_user == true}" class="nav-item">
+            <a class="nav-link active" aria-current="page">Pending <i class="fa-solid fa-hourglass"></i></a>
+        </li>
+        <li th:if="${is_user == true}" class="nav-item">
+            <a class="nav-link text-muted" th:href="'/users/' + ${user.getId()} +'/books-requests/declined'">Declined <i class="fa-solid fa-ban"></i></a>
+        </li>
+    </ul>
+    <div class="d-flex justify-content-center g-4 py-2 row-cols-1">
+        <div th:if="${books.size() == 0}" class="card bg-dark align-items-center rounded pb-3 border border-gray" style="max-width: 800px">
+            <div  class="text-light mt-3">
+                <span th:text="'There are no book requests from ' + ${user.getUsername()} + ' '"></span> <i class="fa-solid fa-face-laugh"></i>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${books.size() > 0}"  class="row row-cols-1 row-cols-md-3 g-4 d-flex justify-content-center">
+        <div class="card bg-dark border border-light d-flex justify-content-center ms-3 me-3 mb-3" th:each="book, iter : ${books}" style="width: 275px; border-radius: 20px">
+            <img class="book-small-cover" th:if="${(pictureModels[iter.index].getContent() == null)}" src="/images/default-cover.png">
+            <img class="book-small-cover" th:if="${(pictureModels[iter.index].getContent() != null)}" th:src="${'data:image/'+ pictureModels[iter.index].getPicFormat() +';base64,' + pictureModels[iter.index].getContent()}">
+            <div class="card-body" >
+                <a class="h5 card-title text-light" th:text="${book.getName()}" th:href="'/books-requests/' + ${book.getId()}" style="text-decoration: none"></a>
+                <div class="mt-2">
+                    <a class="card-link mt-1 text-muted text-break" th:each="author : ${book.getAuthors()}" th:text="${author.getFullName()}" th:href="'/authors/' + ${author.getId()}" style="text-decoration: none"></a>
+                </div>
+            </div>
+            <div class="card-footer">
+                <p class="text-light">
+                    <span>By: <a th:text="${book.getUser().getUsername()}" th:href="'/users/' + ${book.getUser().getId()}" target="_blank"></a></span>
+                </p>
+                <small class="text-muted" th:text="${book.getCreated_at().format(dateFormat)}">
+                </small>
+            </div>
+        </div>
+    </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</div>

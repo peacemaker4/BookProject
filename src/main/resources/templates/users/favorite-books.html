@@ -1,0 +1,45 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <h1 class="page-header pt-3">User favorite books <i class="fa-solid fa-heart"></i></h1>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 mt-3 d-flex justify-content-center">
+        <div th:if="${books.size() == 0}" class="card bg-dark align-items-center rounded pb-3 border border-gray" style="max-width: 800px">
+            <div  class="text-light mt-3">
+                <span th:text="${user.getUsername()} + ' has no favorite books'"></span> <i class="fa-solid fa-face-frown-open"></i>
+            </div>
+        </div>
+            <div th:if="${books.size() > 0}" class="card bg-dark border border-light d-flex justify-content-center ms-3 me-3 mb-3" th:each="book, iter : ${books}" style="width: 275px; border-radius: 20px">
+                <img class="book-small-cover" th:if="${(pictureModels[iter.index].getContent() == null)}" src="/images/default-cover.png">
+                <img class="book-small-cover" th:if="${(pictureModels[iter.index].getContent() != null)}" th:src="${'data:image/'+ pictureModels[iter.index].getPicFormat() +';base64,' + pictureModels[iter.index].getContent()}">
+                <div class="card-body" >
+                    <a class="h5 card-title text-light" th:text="${book.getName()}" th:href="'/books/' + ${book.getId()}" style="text-decoration: none"></a>
+                    <div class="mt-2">
+                        <a class="card-link mt-1 text-muted text-break" th:each="author : ${book.getAuthors()}" th:text="${author.getFullName()}" th:href="'/authors/' + ${author.getId()}" style="text-decoration: none"></a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted" th:if="${scores[iter.index] == 0.0}">
+                        No reviews
+                    </small>
+                    <span th:if="${scores[iter.index] < 4 && scores[iter.index] != 0.0}" class="text-danger">
+                        <i class="fa-solid fa-star"></i>
+                        <small th:text="${scores[iter.index]}"></small>
+                    </span>
+                    <span th:if="${scores[iter.index] >= 4 && scores[iter.index] < 6}" class="text-secondary">
+                        <i class="fa-solid fa-star"></i>
+                        <small th:text="${scores[iter.index]}"></small>
+                    </span>
+                    <span th:if="${scores[iter.index] >= 6}" class="text-success">
+                        <i class="fa-solid fa-star"></i>
+                        <small th:text="${scores[iter.index]}"></small>
+                    </span>
+                </div>
+            </div>
+    </div>
+
+
+
+</div>

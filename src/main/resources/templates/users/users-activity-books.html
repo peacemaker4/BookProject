@@ -1,0 +1,45 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <h1 class="page-header pt-5" style="color: orangered">Users activity <i class="fa-solid fa-fire"></i></h1>
+
+    <ul class="nav nav-tabs d-flex justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link text-muted"  th:href="'/users/users-activity'">Reviews <i class="fa-solid fa-feather-pointed"></i></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active"  aria-current="page">Books <i class="fa-solid fa-book-atlas"></i></a>
+        </li>
+    </ul>
+
+    <div class="d-flex justify-content-center g-4 py-2 row-cols-1">
+        <div th:if="${books.size() == 0}" class="card bg-dark align-items-center rounded pb-3 border border-gray" style="max-width: 800px">
+            <div  class="text-light mt-3">
+                <span th:text="'There are no books posted from ' + ${user.getUsername()} + ' followings'"></span> <i class="fa-solid fa-face-flushed"></i>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${books.size() > 0}"  class="row row-cols-1 row-cols-md-3 g-4 d-flex justify-content-center">
+        <div class="card bg-dark border border-light d-flex justify-content-center ms-3 me-3 mb-3" th:each="book, iter : ${books}" style="width: 275px; border-radius: 20px">
+            <img class="book-small-cover" th:if="${(pictureModels[iter.index].getContent() == null)}" src="/images/default-cover.png">
+            <img class="book-small-cover" th:if="${(pictureModels[iter.index].getContent() != null)}" th:src="${'data:image/'+ pictureModels[iter.index].getPicFormat() +';base64,' + pictureModels[iter.index].getContent()}">
+            <div class="card-body" >
+                <a class="h5 card-title text-light" th:text="${book.getName()}" th:href="'/books/' + ${book.getId()}" style="text-decoration: none"></a>
+                <div class="mt-2">
+                    <a class="card-link mt-1 text-muted text-break" th:each="author : ${book.getAuthors()}" th:text="${author.getFullName()}" th:href="'/authors/' + ${author.getId()}" style="text-decoration: none"></a>
+                </div>
+            </div>
+            <div class="card-footer">
+                <p class="text-light">
+                    <span>By: <a th:text="${book.getUser().getUsername()}" th:href="'/users/' + ${book.getUser().getId()}" target="_blank"></a></span>
+                </p>
+                <small class="text-muted" th:text="${book.getCreated_at().format(dateFormat)}">
+                </small>
+            </div>
+        </div>
+    </div>
+
+</div>

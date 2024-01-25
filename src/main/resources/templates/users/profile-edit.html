@@ -1,0 +1,135 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+<!--  <div th:if="${message != null}"  class="notification align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">-->
+<!--    <div class="d-flex">-->
+<!--      <div class="notification-body" th:text="${message}">-->
+<!--      </div>-->
+<!--      <button type="button" class="msg-close btn-close btn-close-white me-2 m-auto" data-bs-dismiss="notification" aria-label="Close"></button>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div th:if="${error != null}"  class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">-->
+<!--    <div class="d-flex">-->
+<!--      <div class="toast-body" th:text="${error}">-->
+<!--      </div>-->
+<!--      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>-->
+<!--    </div>-->
+<!--  </div>-->
+
+
+
+  <div class="profile-image-container">
+    <form id="profileWallpaperForm" th:if="${profileWallpaper == null}" class="profile-wallpaper-container add-wallpaper border border-0" method="POST" th:action="@{'/user/edit/wallpaper'}" enctype="multipart/form-data">
+      <input id="wallpaperInput" type="file" name="file" hidden />
+      <button type="button" id="wallpaperBtn" class="btn-100 border border-0">
+      </button>
+    </form>
+    <div th:if="${profileWallpaper != null}" class="profile-wallpaper-container border border-0 justify-content-end">
+      <img class="profile-wallpaper" th:src="${'data:image/'+ wallpaperFormat +';base64,' + profileWallpaper}">
+      <button class="position-absolute btn btn-secondary"  data-bs-toggle="modal" data-bs-target="#deleteWallpaperModal">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>
+    </div>
+    <div class="profile-photo-container">
+      <button th:if="${profilePicture != null}" class="position-absolute top-100 start-0 translate-middle p-2 btn btn-danger rounded-circle"  data-bs-toggle="modal" data-bs-target="#deletePictureModal">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>
+      <form th:if="${profilePicture != null}" id="profilePictureForm" method="POST"  th:action="@{/user/edit/photo}" enctype="multipart/form-data">
+        <input id="pictureInput" type="file" name="file" hidden />
+        <button type="button" id="pictureBtn" class="position-absolute top-100 start-100 translate-middle p-2 btn btn-purple rounded-circle">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </form>
+
+      <img th:if="${profilePicture != null}" class="profile-photo border border-5 border-dark bg-black rounded-circle not-draggable" th:src="${'data:image/'+ picFormat +';base64,' + profilePicture}">
+      <form id="profilePictureForm" th:if="${profilePicture == null}" method="POST"  th:action="@{/user/edit/photo}" enctype="multipart/form-data">
+        <div class="profile-photo border border-5 border-dark rounded-circle bg-gradient-4 d-flex justify-content-center align-items-center">
+          <input id="pictureInput" type="file" name="file" hidden />
+          <button type="button" id="pictureBtn" class="big-btn">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <form method="POST" th:action="@{/user/edit}" th:object="${userDetailsModel}">
+    <div class="profile-user-information mt-5">
+      <input name="username" th:value="${userDetailsModel?.getUsername()}" class="profile-username bg-transparent text-center border border-white rounded" value="PeaceMaker4">
+    </div>
+    <div class="d-flex justify-content-center g-4 py-4 row-cols-lg-4">
+      <div class="form-group text-center">
+        <label for="descriptionInput" class="form-label text-light">About:</label>
+        <textarea name="about" th:text="${userDetailsModel?.getAbout()}" class="form-control bg-transparent text-light" id="descriptionInput" rows="3"  aria-describedby="about" maxlength="255"></textarea>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center g-4 py-2 row-cols-lg-4">
+      <div class="card bg-transparent">
+        <button type="submit" class="btn btn-outline-primary">
+          Submit
+          <i class="fa-solid fa-circle-check"></i>
+        </button>
+      </div>
+    </div>
+
+  </form>
+
+  <form method="POST" th:if="${profilePicture != null}" th:action="@{'/user/delete/picture'}">
+    <div class="modal fade" id="deletePictureModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark">
+          <div class="modal-header">
+            <h5 class="modal-title text-light" id="modalLabel">Confirm action</h5>
+            <button type="button" class="btn bg-transparent text-light" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div class="modal-body text-secondary">
+            <span class="text-light" th:text="'Delete profile picture?'"></span>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-dark border border-white" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <form method="POST" th:if="${profileWallpaper != null}" th:action="@{'/user/delete/wallpaper'}">
+    <div class="modal fade" id="deleteWallpaperModal" tabindex="-1" aria-labelledby="modalLabel2" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark">
+          <div class="modal-header">
+            <h5 class="modal-title text-light" id="modalLabel2">Confirm action</h5>
+            <button type="button" class="btn bg-transparent text-light" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div class="modal-body text-light">
+            <span th:text="'Delete profile wallpaper?'"></span>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-dark border border-white" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <script>
+    $("#pictureBtn").click(function (){
+      $("#pictureInput").click();
+    });
+    $("#pictureInput").change(function() {
+      $("#profilePictureForm").submit();
+    });
+    $("#wallpaperBtn").click(function (){
+      $("#wallpaperInput").click();
+    });
+    $("#wallpaperInput").change(function() {
+      $("#profileWallpaperForm").submit();
+    });
+  </script>
+
+</div>
+

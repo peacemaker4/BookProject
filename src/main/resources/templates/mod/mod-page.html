@@ -1,0 +1,37 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <h1 class="page-header pt-3">Moderators page <i class="fa-solid fa-eye"></i></h1>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center row g-4 py-5 row-cols-1 row-cols-lg-3">
+            <div>
+                <div class="card bg-dark align-items-center rounded pb-3 border border-gray">
+                    <h2 class="main-font-medium text-light text-center mt-3">User requests <i class="fa-solid fa-user-clock"></i></h2>
+                    <a class="btn btn-purple text-black mt-3" th:href="@{/edit/reviews-requests/}">
+                        Review requests <i class="fa-solid fa-feather-pointed"></i>
+                    </a>
+                    <a class="btn btn-info mt-3" th:href="@{/edit/books-requests/}">
+                        Book requests <i class="fa-solid fa-book-open"></i>
+                    </a>
+                    <a class="btn btn-orange text-black mt-3" th:href="@{/edit/tags-suggestions}">
+                        Tag suggestions <i class="fa-solid fa-user-tag"></i>
+                    </a>
+                    <a class="btn btn-warning text-black mt-3" th:href="@{/edit/authors-suggestions}">
+                        Authors suggestions <i class="fa-solid fa-user-plus"></i>
+                    </a>
+                </div>
+                <div class="card bg-dark align-items-center rounded mt-3 pb-3 border border-gray">
+                    <h2 class="main-font-medium text-light text-center mt-3">Manage data <i class="fa-solid fa-arrows-rotate"></i></h2>
+                    <a class="btn btn-orange mt-3" th:href="@{/edit/tags/add/}">
+                        Add book tags <i class="fa-solid fa-tag"></i>
+                    </a>
+                    <a class="btn btn-primary mt-3" th:href="@{/edit/authors/add/}">
+                        Add authors <i class="fa-solid fa-user-pen"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

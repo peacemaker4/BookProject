@@ -1,0 +1,69 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <h1 class="page-header pt-3">User declined reviews <i class="fa-solid fa-file-pen"></i> </h1>
+    <nav aria-label="Page navigation" class="w-100 d-flex justify-content-center bg-transparent pt-3" th:if="${page != null || pageSize != null}">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link bg-black border border-light text-light" th:href="@{'/users/'+ ${user.getId()} + '/reviews-requests/declined?page='+${page - 1}}" th:if="${page>0}"><i class="fa-solid fa-angle-left"></i></a></li>
+            <li class="page-item"><a class="page-link bg-black border border-light text-light disabled" th:href="@{'/users/'+ ${user.getId()} + '/reviews-requests/declined?page='+${page - 1}}" th:if="${page==0}" ><i class="fa-solid fa-angle-left"></i></a></li>
+            <li class="page-item"><a class="page-link bg-black border border-light text-light" th:href="@{'/users/'+ ${user.getId()} + '/reviews-requests/declined?page='+${page + 1}}" th:if="${(ratingsCount.floatValue()/pageSize.floatValue()) > (page.floatValue() + (1.0))}"><i class="fa-solid fa-angle-right"></i></a></li>
+            <li class="page-item"><a class="page-link bg-black border border-light text-light disabled" th:href="@{'/users/'+ ${user.getId()} + '/reviews-requests/declined?page='+${page + 1}}"  th:if="${(ratingsCount.floatValue()/pageSize.floatValue()) <= (page.floatValue() + 1.0)}"><i class="fa-solid fa-angle-right"></i></a></li>
+        </ul>
+    </nav>
+
+    <ul class="nav nav-tabs d-flex justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link text-muted" th:href="'/users/' + ${user.getId()} +'/reviews'">Posted <i class="fa-solid fa-check"></i></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-muted" th:href="'/users/' + ${user.getId()} +'/reviews-requests'">Pending <i class="fa-solid fa-hourglass"></i></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" >Declined <i class="fa-solid fa-ban"></i></a>
+        </li>
+    </ul>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center row g-4 py-2 row-cols-1 row-cols-lg-3">
+            <div class="d-flex justify-content-center row g-4 py-2 row-cols-1" >
+                <div th:if="${ratings.size() == 0}" class="card bg-dark align-items-center rounded pb-3 border border-gray" style="max-width: 800px">
+                    <div  class="text-light mt-3">
+                        <span th:text="'There are no declined reviews from ' + ${user.getUsername()} + ' '"></span> <i class="fa-solid fa-face-grin-wink"></i>
+                    </div>
+                </div>
+                <div th:if="${ratings.size() > 0}"  th:each="rate : ${ratings}" class="card bg-light text-center rounded" style="max-width: 800px">
+                    <div class="card-body">
+                        <div class="card-header text-black">
+                            <p class="text-center" >
+                                Commentary
+                            </p>
+                            <p class="card bg-light border border-dark rounded" th:text="${rate.getCommentary()}">
+                            </p>
+                        </div>
+                        <h5 class="card-title text-black main-font-light font-weight-bold mt-3"  th:text="${rate.getTitle()}"></h5>
+                        <p>
+                            <a class="text-secondary" data-bs-toggle="collapse" th:href="'#collapseDescription' + ${rate.getId()}" role="button" aria-expanded="false" th:aria-controls="'collapseDescription' + ${rate.getId()}">
+                                Read more
+                            </a>
+                        </p>
+                        <div class="collapse" th:id="'collapseDescription' + ${rate.getId()}">
+                            <div class="card card-body bg-light text-black" th:text="${rate.getDescription()}">
+                            </div>
+                        </div>
+                        <div class="collapse" >
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <p>
+                            <span>Book: <a th:text="${rate.getBook().getName()}" th:href="'/books/' + ${rate.getBook().getId()}" target="_blank"></a></span>
+                        </p>
+                        <p th:text="${rate.getCreated_at().format(dateFormat)}"></p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</div>

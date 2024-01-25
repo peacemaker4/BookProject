@@ -1,0 +1,95 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-5">
+
+    <div class="d-flex justify-content-center pt-3 mb-3">
+        <form class="input-group mb-3" th:action="@{/books/}" method="post" style="max-width: 540px;">
+            <a class="btn btn-light" th:href="@{/books/}"><i class="fa-solid fa-book-open-reader"></i></a>
+            <input type="text" class="form-control bg-transparent border border-light text-light" name="keyword" placeholder="Search" th:value="${keyword}" >
+            <button class="btn btn-outline-light" type="submit" id="button-addon2"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+
+    <div class="d-flex justify-content-center g-4 py-2 row-cols-1 mt-3">
+        <div class="card mb-3 bg-dark border border-light" style="max-width: 800px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="/images/bg-3.jpg" class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-light main-font-medium">Expand our library!</h2>
+                        <p class="card-text text-light main-font-light">Add your book!</p>
+                        <a class="btn btn-purple" th:href="'/books/add'">
+                            Add a book
+                            <i class="fa-solid fa-square-plus"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="book-title text-center mb-3">New books</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4 d-flex justify-content-center">
+        <div class="card bg-dark border border-light d-flex justify-content-center ms-3 me-3 mb-3" th:each="book, iter : ${lastBooks}" style="width: 275px; border-radius: 20px">
+            <img class="book-small-cover" th:if="${(pictureModels[iter.index].getContent() == null)}" src="/images/default-cover.png">
+            <img class="book-small-cover" th:if="${(pictureModels[iter.index].getContent() != null)}" th:src="${'data:image/'+ pictureModels[iter.index].getPicFormat() +';base64,' + pictureModels[iter.index].getContent()}">
+            <div class="card-body" >
+                <a th:href="'/books/' + ${book.getId()}" class="h5 card-title text-light bg-transparent border border-0" th:text="${book.getName()}"style="text-decoration: none"></a>
+                <div class="mt-2">
+                    <a class="card-link mt-1 text-muted text-break" th:each="author : ${book.getAuthors()}" th:text="${author.getFullName()}" th:href="'/authors/' + ${author.getId()}" style="text-decoration: none"></a>
+                </div>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted" th:if="${scores[iter.index] == 0.0}">
+                    No reviews
+                </small>
+                <span th:if="${scores[iter.index] < 4 && scores[iter.index] != 0.0}" class="text-danger">
+                        <i class="fa-solid fa-star"></i>
+                        <small th:text="${scores[iter.index]}"></small>
+                    </span>
+                <span th:if="${scores[iter.index] >= 4 && scores[iter.index] < 6}" class="text-secondary">
+                        <i class="fa-solid fa-star"></i>
+                        <small th:text="${scores[iter.index]}"></small>
+                    </span>
+                <span th:if="${scores[iter.index] >= 6}" class="text-success">
+                        <i class="fa-solid fa-star"></i>
+                        <small th:text="${scores[iter.index]}"></small>
+                    </span>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center">
+        <a class="btn btn-light" th:href="'/books/'">View all books <i class="fa-solid fa-book-open-reader"></i></a>
+    </div>
+
+
+
+    <div class="d-flex justify-content-center g-4 mt-3 py-2 row-cols-1">
+        <div class="card bg-light align-items-center pb-3 border border-2 border-dark" style="max-width: 800px">
+            <p class="h4 main-font-medium font-weight-bold mt-3 text-black">Authors <i class="fa-solid fa-user"></i>
+            </p>
+            <a class="btn btn-outline-dark rounded-pill mt-3" th:href="@{/authors}">
+                View
+            </a>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center g-4 py-2 row-cols-1 mt-3">
+        <div class="card bg-dark align-items-center rounded pb-3 border border-gray" style="max-width: 800px">
+            <p class="h4 main-font-medium font-weight-bold mt-3 text-light">Explore genres <i class="fa-solid fa-tags"></i>
+            </p>
+            <div class="book-tags mt-3 text-center">
+                <a class="badge rounded-pill bg-light text-dark ms-1" th:each="tag : ${rand_tags}" th:text="${tag.getName()}" th:href="'/tags/' + ${tag.getId()}" style="text-decoration: none"></a>
+            </div>
+            <a class="btn btn-light rounded-pill mt-3" th:href="@{/tags}">
+                Explore
+            </a>
+        </div>
+    </div>
+
+
+</div>

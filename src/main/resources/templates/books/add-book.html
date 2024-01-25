@@ -1,0 +1,121 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center row g-4 py-5 row-cols-1 row-cols-lg-2">
+            <form id="bookForm" th:action="@{/books/add}" th:object="${bookModel}" method="post" class="bg-dark rounded">
+                <div style="text-align:center;margin-top:40px;">
+                        <span class="step">
+                            <i class="fa-solid fa-book"></i>
+                        </span>
+                    <span class="step">
+                            <i class="fa-solid fa-image-portrait"></i>
+                        </span>
+                    <span class="step">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </span>
+                    <span class="step">
+                            <i class="fa-solid fa-tags"></i>
+                        </span>
+                </div>
+                <h1 class="text-light book-title mt-3">Adding a book:</h1>
+                <div class="tab">
+                    <span class="text-light">Book info:</span>
+                    <div class="form-floating form-group mb-3">
+                        <input type="text" class="form-control input-required" th:field="*{name}" name="name" id="titleInput" placeholder="Title" required>
+                        <label for="titleInput">Title</label>
+                        <div class="invalid-feedback">
+                            Enter the title
+                        </div>
+                    </div>
+                    <div class="form-floating">
+                        <textarea class="form-control input-required" th:field="*{description}" name="description" placeholder="Description" id="descriptionInput" style="height: 100px"></textarea>
+                        <label for="descriptionInput">Description</label>
+                        <div class="invalid-feedback">
+                            Description required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab">
+                    <span class="text-light">Authors:</span>
+                    <div class="mb-3">
+                        <select name="authors_ids" id="authors_ids" class="form-control selectpicker input-required" data-live-search="true" multiple required>
+                            <option th:each="author : ${authors}" th:value="${author.getId()}" th:text="${author.getFullName()}" th:data-tokens="${author.getFullName().toLowerCase()}"></option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Enter authors
+                        </div>
+                    </div>
+                    <div class="form-floating form-group mb-3">
+                        <input type="text" class="form-control input-required" th:field="*{publisher}" name="publisher" id="publisherInput" placeholder="Publisher" required>
+                        <label for="publisherInput">Publisher</label>
+                        <div class="invalid-feedback">
+                            Enter publisher
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab">
+                    <span class="text-light">Additional info:</span>
+                    <div class="form-floating form-group mb-3">
+                        <input type="text" class="form-control input-required" th:field="*{pages}" name="pages" id="pagesInput" placeholder="Authors" required>
+                        <label for="pagesInput">Pages</label>
+                        <div class="invalid-feedback">
+                            Enter number of pages
+                        </div>
+                    </div>
+                    <div class="form-floating form-group mb-3">
+                        <input type="text" class="form-control input-required" th:field="*{year}" name="year" id="yearInput" placeholder="Authors" required>
+                        <label for="yearInput">Year</label>
+                        <div class="invalid-feedback">
+                            Enter release year
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab">
+                    <span class="text-light">Tags, genres:</span>
+                    <div class="mb-3">
+                        <select name="tags_ids" id="tags_ids" class="form-control selectpicker input-required" data-live-search="true" multiple required>
+                            <option th:each="tag : ${tags}" th:value="${tag.getId()}" th:text="${tag.getName()}"></option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Tags are required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3 d-flex justify-content-center" style="overflow:auto;">
+                    <div style="float:right;">
+                        <button type="button" class="btn btn-outline-primary" id="prevBtn" onclick="nextPrev(-1)">
+                            <i class="fa-solid fa-angle-left"></i>
+                            Previous
+                        </button>
+                        <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextPrev(1)">
+                            Next
+                            <i class="fa-solid fa-angle-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <script>
+        $(function() {
+            $('.selectpicker').selectpicker();
+        });
+    </script>
+
+</div>

@@ -1,0 +1,106 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <div class="profile-image-container">
+        <div class="profile-wallpaper-container border border-0">
+            <img th:if="${profileWallpaper != null}" class="profile-wallpaper" th:src="${'data:image/'+ wallpaperFormat +';base64,' + profileWallpaper}">
+        </div>
+        <div class="profile-photo-container">
+            <img th:if="${(profilePicture != null)}" th:src="${'data:image/'+ picFormat +';base64,' + profilePicture}" class="profile-photo border border-5 border-dark bg-black rounded-circle not-draggable" >
+            <img th:if="${(profilePicture == null)}" src="/images/default-profile.png" class="profile-photo border border-5 border-dark rounded-circle not-draggable" >
+        </div>
+    </div>
+    <div class="profile-user-information">
+        <h1 class="profile-username" th:text="${userProfile.getUsername()}">
+        </h1>
+    </div>
+    <div class="d-flex justify-content-center">
+        <form method="post" th:action="'/users/' + ${userProfile.getId()} + '/following'">
+            <button type="submit" th:if="${user.getId() != userProfile.getId() && relationship == null}" class="btn btn-dark text-light border border-light rounded-pill">
+                Follow <i class="fa-solid fa-plus"></i>
+            </button>
+            <button type="submit" th:if="${user.getId() != userProfile.getId() && relationship != null}" class="btn btn-light rounded-pill">
+                Unfollow <i class="fa-solid fa-user-xmark"></i>
+            </button>
+        </form>
+
+        <a th:if="${user.getId() == userProfile.getId()}" th:href="@{/user/edit}" type="button" class="btn btn-purple rounded-pill">
+            Edit profile <i class="fa-solid fa-pen"></i>
+        </a>
+    </div>
+
+
+
+    <div class="d-flex justify-content-center g-4 row-cols-lg-3">
+        <div class="mt-3 card bg-dark border border-gray text-light rounded">
+            <div class="card-body text-center">
+                <p class="card-text" th:text="${userProfile.getDetails().getAbout()}"></p>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center row g-4 py-2 row-cols-1 row-cols-lg-3 mb-3 mx-3">
+        <a class="card bg-light text-center rounded-pill border border-dark" th:href="'/users/'+ ${userProfile.getId()} + '/followers'" style="text-decoration: none; max-width: 250px; min-width: 100px">
+            <div class="card-body text-black main-font-medium" >
+                <i class="fa-solid fa-user-group"></i> Followers:
+                <span th:text="${followers}"></span>
+            </div>
+        </a>
+        <a class="card bg-light text-center rounded-pill border border-dark" th:href="'/users/'+ ${userProfile.getId()} + '/following'" style="text-decoration: none; max-width: 250px; min-width: 100px">
+            <div class="card-body text-black main-font-medium">
+                <i class="fa-solid fa-user-check"></i> Following:
+                <span th:text="${following}"></span>
+            </div>
+        </a>
+    </div>
+
+
+    <p class="h1 text-center text-light main-font-medium mt-5">Latest reviews <i class="fa-solid fa-feather-pointed"></i></p>
+
+    <div class="d-flex justify-content-center row g-4 py-2 row-cols-1 row-cols-lg-3 mb-3 mx-3" >
+        <div th:if="${ratings.size() == 0}" class="card bg-dark align-items-center rounded pb-3 border border-gray" style="max-width: 800px">
+            <div  class="text-light mt-3">
+                User has never written a review
+            </div>
+        </div>
+        <div th:if="${ratings.size() > 0}"  th:each="rate : ${ratings}" class="card bg-dark text-center rounded pb-1 border border-gray" style="max-width: 800px">
+            <div class="card-body">
+                <h5 class="card-title text-light main-font-light font-weight-bold"  th:text="${rate.getTitle()}"></h5>
+                <p>
+                    <a class="text-secondary" data-bs-toggle="collapse" th:href="'#collapseDescription' + ${rate.getId()}" role="button" aria-expanded="false" th:aria-controls="'collapseDescription' + ${rate.getId()}">
+                        Read more
+                    </a>
+                </p>
+                <div class="collapse" th:id="'collapseDescription' + ${rate.getId()}">
+                    <div class="card card-body bg-dark text-light" th:text="${rate.getDescription()}">
+                    </div>
+                </div>
+                <div class="collapse" >
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <p>
+                    <span>Book: <a th:text="${rate.getBook().getName()}" th:href="'/books/' + ${rate.getBook().getId()}"></a></span>
+                </p>
+                <p th:text="${rate.getCreated_at().format(dateFormat)}"></p>
+            </div>
+        </div>
+
+    </div>
+    <div class="d-flex justify-content-center row g-4 py-2 row-cols-1 row-cols-lg-3 mb-3 mx-3">
+        <div th:if="${ratings.size() > 0}"  class="card bg-dark align-items-center rounded mt-3 pb-3 border border-gray" style="max-width: 800px">
+            <a th:href="'/users/' + ${userProfile.getId()} + '/reviews'" class="text-black mt-3 btn btn-light border border-dark">
+                View all user reviews <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center row g-4 py-2 row-cols-1 row-cols-lg-3 mb-3 mx-3">
+        <div class="card bg-dark align-items-center rounded mt-3 pb-3 border border-gray" style="max-width: 800px">
+            <a th:href="'/users/' + ${userProfile.getId()} + '/favorite'" class="text-light mt-3 btn btn-danger border border-dark">
+                View user favorite books <i class="fa-solid fa-heart"></i>
+            </a>
+        </div>
+    </div>
+
+</div>

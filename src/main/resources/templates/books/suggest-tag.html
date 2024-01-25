@@ -1,0 +1,30 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <div class="row d-flex justify-content-center ms-3 me-3">
+        <div class="col-sm-6 text-light text-center">
+            <h3 class="text-center text-light pt-3">Tag suggest <i class="fa-solid fa-tags"></i></h3>
+
+            <form class="mt-3" th:action="@{/tags/suggest}" th:object="${tagModel}" method="post">
+                <div class="mb-3">
+                    <label for="inputName" class="form-label">Title</label>
+                    <input type="text" th:field="*{name}" name="name" class="form-control rounded-pill" id="inputName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="inputDescription" class="form-label">Description</label>
+                    <textarea class="form-control rounded-pill" id="inputDescription" th:field="*{description}" aria-label="Description"></textarea>
+                </div>
+                <button type="submit" class="btn btn-orange">Suggest <i class="fa-solid fa-tag"></i></button>
+            </form>
+            <div class="card bg-dark rounded align-items-center pb-3 mt-3 border border-gray text-light">
+                <span class="mt-3">
+                    The tag will be reviewed by moderation and will be added if needed. Thanks!
+                </span>
+            </div>
+        </div>
+
+    </div>
+</div>
+

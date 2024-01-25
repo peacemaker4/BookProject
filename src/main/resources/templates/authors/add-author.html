@@ -1,0 +1,32 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center row g-4 py-5 row-cols-1 row-cols-lg-2">
+            <form id="bookForm" th:action="@{/edit/authors/add}" th:object="${authorModel}" method="post" class="bg-dark rounded">
+                <div class="card bg-dark border border-0 mt-3 p-3 ">
+                    <span class="text-light text-center">Author:</span>
+                    <div class="form-floating form-group mb-3">
+                        <input type="text" class="form-control bg-transparent text-light" id="fullNameInput" name="fullName" th:field="*{fullName}" placeholder="Publisher" required>
+                        <label for="fullNameInput" class="text-light"><i class="fa-solid fa-user"></i> Fullname</label>
+                        <div class="invalid-feedback">
+                            Enter Author Full Name
+                        </div>
+                    </div>
+                    <div class="mb-3 text-center">
+                        <label for="descriptionInput" class="form-label text-light">Description</label>
+                        <textarea class="form-control input-required bg-transparent border border-light text-light" th:field="*{description}" name="description" id="descriptionInput" rows="4"></textarea>
+                        <div class="invalid-feedback">
+                            Description required
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-warning">Add <i class="fa-solid fa-user-plus"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>

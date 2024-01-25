@@ -1,0 +1,30 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center row g-4 py-5 row-cols-1">
+            <div th:if="${authorPicture == null}" class="author-picture bg-gradient-2 d-flex justify-content-center align-items-center">
+            </div>
+            <div th:if="${authorPicture != null}" class="card bg-transparent rounded align-items-center">
+                <img class="author-picture rounded" th:src="${'data:image/'+ picFormat +';base64,' + authorPicture}">
+            </div>
+
+                <div class="card bg-dark align-items-center rounded p-3">
+                    <h1 class="book-title" th:text="${author.getFullName()}"></h1>
+                    <a class="btn btn-outline-warning"  th:if="${author.getUserId()==user.getId()}" th:href="@{'/edit/authors/' + ${author.getId()} }">
+                        Edit
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                    <card class="card-body text-center">
+                        <p class="main-font-light text-light" th:text="${author.getDescription()}">
+                        </p>
+                    </card>
+                </div>
+
+        </div>
+    </div>
+
+</div>

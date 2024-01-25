@@ -1,0 +1,57 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center row g-4 py-5 row-cols-1">
+            <div th:if="${authorPicture == null}" class="author-picture bg-gradient-2 d-flex justify-content-center align-items-center">
+                <form id="bookCoverForm" method="POST" th:action="@{'/edit/authors/' + ${author.getId()} + '/add/picture'}" enctype="multipart/form-data">
+                    <input id="coverInput" type="file" name="file" hidden />
+                    <button type="button" id="coverBtn" class="big-btn">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </form>
+            </div>
+            <div th:if="${authorPicture != null}" class="card bg-transparent rounded align-items-center">
+                <img class="author-picture rounded" th:src="${'data:image/'+ picFormat +';base64,' + authorPicture}">
+                <div class="d-flex justify-content-center mt-3">
+                    <form method="POST" th:action="@{'/edit/authors/' + ${author.getId()} + '/delete/picture'}">
+                        <button class="btn btn-outline-danger me-1">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <form method="POST" th:action="@{'/edit/authors/' + ${author.getId()}}" th:object="${authorModel}">
+                <div class="card bg-dark align-items-center rounded p-3">
+                    <div class="mb-3 text-center">
+                        <label for="fullNameInput" class="form-label text-light">Author Full Name:</label>
+                        <input type="text" class="form-control book-title bg-transparent text-light" th:field="*{fullName}" name="fullName" id="fullNameInput">
+                    </div>
+                    <div class="form-group mb-3 text-center">
+                        <label for="descriptionInput" class="form-label text-light">Description:</label>
+                        <textarea class="form-control book-description bg-transparent text-light" th:field="*{description}" name="description" id="descriptionInput" rows="5" cols="50">
+                        </textarea>
+                    </div>
+                    <button type="submit" class="btn btn-warning">Update <i class="fa-solid fa-arrows-rotate"></i></button>
+                </div>
+            </form>
+
+
+
+        </div>
+    </div>
+
+    <script>
+        $("#coverBtn").click(function (){
+            $("#coverInput").click();
+        });
+        $("#coverInput").change(function() {
+            $("#bookCoverForm").submit();
+        });
+    </script>
+
+</div>

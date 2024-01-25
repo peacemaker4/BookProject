@@ -1,0 +1,156 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-8">
+
+    <form method="POST" th:action="@{'/books-requests/' + ${book.getId()} + '/delete'}">
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-light" id="modalLabel">Confirm action</h5>
+                        <button type="button" class="btn bg-transparent text-light" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="modal-body text-light">
+                        <span th:text="'Are you sure you want to remove ' + ${book.getName()} + ' book request? It cannot be restored!'"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark border border-white" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form method="post" th:action="'/edit/books-requests/' + ${book.getId()} + '/decline'">
+        <div class="modal fade" id="declineRequestModal" tabindex="-1" aria-labelledby="modalLabel2" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-light" id="modalLabel2">Confirm action</h5>
+                        <button type="button" class="btn bg-transparent text-light" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="modal-body text-light">
+                        <div class="form-group text-center">
+                            <label for="commentInput" class="form-label text-light">Comment on your decline action:</label>
+                            <textarea name="commentary" class="form-control bg-transparent text-light" id="commentInput" rows="2" aria-describedby="about" maxlength="255"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark border border-white" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-outline-purple">Decline</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center row g-4 py-5 row-cols-1 row-cols-lg-3">
+            <img class="book-cover rounded" th:if="${bookCover == null}" src="/images/default-cover.png">
+            <img class="book-cover rounded" th:if="${bookCover != null}" th:src="${'data:image/'+ picFormat +';base64,' + bookCover}">
+
+            <div>
+                <div class="card bg-dark align-items-center rounded pb-3 border border-gray">
+                    <h1 class="book-title mt-3" th:text="${book.getName()}">
+                    </h1>
+                    <div>
+                        <div class="mt-2" th:each="author, iter : ${book.getAuthors()}">
+                            <img th:if="${authorsPictures[iter.index].getContent() == null }" class="author-image" src="/images/default-profile.png">
+                            <img th:if="${authorsPictures[iter.index].getContent() != null }" class="author-image" th:src="${'data:image/'+ authorsPictures[iter.index].getPicFormat() +';base64,' + authorsPictures[iter.index].getContent()}">
+                            <a class="book-author" th:text="${author.getFullName()}" th:href="'/authors/' + ${author.getId()}" style="text-decoration: none"></a>
+                        </div>
+                    </div>
+
+                    <div class="book-tags mt-3 text-center">
+                        <a class="badge rounded-pill bg-light text-dark ms-1" th:each="tag : ${book.getTags()}" th:text="${tag.getName()}" th:href="'/tags/' + ${tag.getId()}" style="text-decoration: none"></a>
+                    </div>
+                    <div class="module container">
+                        <p class="collapse text-light book-description mt-3 collapseDescription" th:text="${book.getDescription()}" aria-expanded="false">
+                        </p>
+                        <button role="button" class="text-secondary bg-transparent border border-0 collapsed" data-toggle="collapse" href=".collapseDescription" aria-expanded="false" aria-controls="collapseBookDescription"></button>
+                    </div>
+                    <div class="info-container d-flex justify-content-start mt-3 ">
+                        <div>
+                            <span class="text-light">Publisher</span>
+                            <div class="info-box border border-2 border-light rounded-circle text-light" href="#">
+                                <i class="fa-solid fa-building"></i>
+                            </div>
+                            <span class="text-light" th:text="${book.getPublisher()}"></span>
+                        </div>
+                        <div>
+                            <span class="text-light">Pages</span>
+                            <div class="info-box border border-2 border-light rounded-circle text-light" href="#">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                            <span class="text-light" th:text="${book.getPages()}"></span>
+                        </div>
+                        <div>
+                            <span class="text-light">Year</span>
+                            <div class="info-box border border-2 border-light rounded-circle text-light" href="#">
+                                <i class="fa-solid fa-calendar-day"></i>
+                            </div>
+                            <span class="text-light" th:text="${book.getYear()}"></span>
+                        </div>
+
+                    </div>
+                    <div class="book-tags mt-3 text-light">
+                        <span>Uploaded by: <a th:href="'/users/' + ${book.getUser().getId()}" th:text="${book.getUser().getUsername()}"></a></span>
+                        <p class="mt-3 text-center">
+                            <span class="text-muted" th:text="${book.getCreated_at().format(dateFormat)}">
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div th:if="${book.getFile() != ''}" class="card bg-dark rounded align-items-center pb-3 mt-3 border border-gray">
+                    <span class="mt-3">
+                        <p class="h4 main-font-medium font-weight-bold mt-3 text-light">Uploaded file:
+                        </p>
+                        <form class="text-center mt-1" method="post" th:action="'/books-requests/' + ${book.getId()} + '/download'">
+                            <button class="btn btn-outline-success rounded-pill" type="submit">Download <i class="fa-solid fa-download"></i></button>
+                        </form>
+                    </span>
+                </div>
+                <div class="card bg-dark rounded align-items-center pb-3 mt-3 border border-gray">
+                    <span class="mt-3" th:if="${!is_approved}">
+                        <a class="btn btn-outline-primary"  th:if="${book.getUser().getId() == user.getId() || is_user}" th:href="@{'/books-requests/' + ${book.getId()} + '/edit/'}">
+                            Edit
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+                        <button type="button" class="btn btn-outline-danger"  th:if="${book.getUser().getId() == user.getId()}" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            Remove request <i class="fa-solid fa-minus"></i>
+                        </button>
+                    </span>
+                    <span class="mt-4 text-light text-center" th:if="${is_approved}">
+                        <p>
+                            <span>This book is not approved by moderators <i class="fa-solid fa-circle-exclamation"></i></span>
+                        </p>
+                    </span>
+                </div>
+                <div th:if="${is_user}" class="card bg-dark rounded align-items-center pb-3 mt-3 border border-gray">
+                    <div class="card-body mt-3 ">
+                        <span>
+                            <form method="post"  th:action="@{'/edit/books-requests/' + ${book.getId()} + '/allow'}" class="text-center">
+                                <button class="btn btn-purple">
+                                    Allow
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                            </form>
+                        </span>
+
+
+                        <button class="btn btn-outline-purple"  data-bs-toggle="modal" data-bs-target="#declineRequestModal">
+                            Decline
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</div>

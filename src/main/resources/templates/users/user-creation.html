@@ -1,0 +1,22 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-7 h-100">
+    <h1 class="page-header pt-3"> <span th:text="'It is ' + ${user.getUsername()} + '!'"></span> <i class="fa-solid fa-hand-sparkles"></i></h1>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center row g-4 py-5 row-cols-1 row-cols-lg-3">
+            <div>
+                <a class="card align-items-center rounded-pill pb-3 bg-purple"  th:href="'/users/' + ${user.getId} + '/reviews'"  style="text-decoration: none">
+                    <h2 class="main-font-medium text-light text-center mt-3">Reviews <i class="fa-solid fa-feather-pointed"></i></h2>
+                </a>
+                <a class="card bg-info align-items-center rounded-pill pb-3 mt-3"  th:href="'/users/' + ${user.getId} + '/books'"  style="text-decoration: none">
+                    <h2 class="main-font-medium text-light text-center mt-3">Books <i class="fa-solid fa-book-open"></i></h2>
+                </a>
+                <a class="card bg-light align-items-center rounded-pill pb-3 mt-3"  th:href="@{/books/add}"  style="text-decoration: none">
+                    <h2 class="main-font-medium text-black text-center mt-3">Add book <i class="fa-solid fa-circle-plus"></i></h2>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

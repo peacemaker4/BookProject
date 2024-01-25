@@ -1,0 +1,98 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <h1 class="page-header pt-3">Review requests <i class="fa-solid fa-file-pen"></i> </h1>
+    <nav aria-label="Page navigation" class="w-100 d-flex justify-content-center bg-transparent pt-3" th:if="${page != null || pageSize != null}">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link bg-black border border-light text-light" th:href="@{'/edit/reviews-requests?page='+${page - 1}}" th:if="${page>0}"><i class="fa-solid fa-angle-left"></i></a></li>
+            <li class="page-item"><a class="page-link bg-black border border-light text-light disabled" th:href="@{'/edit/reviews-requests?page='+${page - 1}}" th:if="${page==0}" ><i class="fa-solid fa-angle-left"></i></a></li>
+            <li class="page-item"><a class="page-link bg-black border border-light text-light" th:href="@{'/edit/reviews-requests?page='+${page + 1}}" th:if="${(ratingsCount.floatValue()/pageSize.floatValue()) > (page.floatValue() + (1.0))}"><i class="fa-solid fa-angle-right"></i></a></li>
+            <li class="page-item"><a class="page-link bg-black border border-light text-light disabled" th:href="@{'/edit/reviews-requests?page='+${page + 1}}"  th:if="${(ratingsCount.floatValue()/pageSize.floatValue()) <= (page.floatValue() + 1.0)}"><i class="fa-solid fa-angle-right"></i></a></li>
+        </ul>
+    </nav>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center row g-4 py-2 row-cols-1 row-cols-lg-3">
+            <div class="d-flex justify-content-center row g-4 py-2 row-cols-1" >
+                <div class="card bg-dark align-items-center rounded pb-3 border border-gray" style="max-width: 800px">
+                    <a th:href="'/edit/reviews-requests/declined'" class="text-black mt-3 btn btn-light border border-dark">
+                        Declined review request <i class="fa-solid fa-ban"></i>
+                    </a>
+                </div>
+                <div th:if="${ratings.size() == 0}" class="card bg-dark align-items-center rounded pb-3 border border-gray" style="max-width: 800px">
+                    <div  class="text-light mt-3">
+                        There are no review requests <i class="fa-solid fa-check"></i>
+                    </div>
+                </div>
+                <div th:if="${ratings.size() > 0}"  th:each="rate : ${ratings}" class="card bg-dark text-center rounded pb-3 border border-gray" style="max-width: 800px">
+                    <div class="card-header text-muted">
+                        <p>
+                            <span>Book: <a th:text="${rate.getBook().getName()}" th:href="'/books/' + ${rate.getBook().getId()}" target="_blank"></a></span>
+                        </p>
+                        <p>
+                            <span>By: <a th:text="${rate.getUser().getUsername()}" th:href="'/users/' + ${rate.getUser().getId()}" target="_blank"></a></span>
+                        </p>
+                        <p th:text="${rate.getCreated_at().format(dateFormat)}"></p>
+
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title text-light main-font-light font-weight-bold"  th:text="${rate.getTitle()}"></h5>
+                        <p>
+                            <a class="text-secondary" data-bs-toggle="collapse" th:href="'#collapseDescription' + ${rate.getId()}" role="button" aria-expanded="false" th:aria-controls="'collapseDescription' + ${rate.getId()}">
+                                Read more
+                            </a>
+                        </p>
+                        <div class="collapse" th:id="'collapseDescription' + ${rate.getId()}">
+                            <div class="card card-body bg-dark text-light" th:text="${rate.getDescription()}">
+                            </div>
+                        </div>
+                        <div class="collapse" >
+                        </div>
+                    </div>
+                    <div class="card-footer text-light">
+                        <span>
+                            <form method="post" th:action="'/edit/reviews-requests/' + ${rate.getId()} + '/allow'">
+                            <button class="btn btn-purple" type="submit">
+                                Allow <i class="fa-solid fa-check"></i>
+                            </button>
+                        </form>
+                        </span>
+
+                        <button class="btn btn-outline-purple" data-bs-toggle="modal" data-bs-target="#declineRequestModal">
+                            Decline <i class="fa-solid fa-ban"></i>
+                        </button>
+
+                        <form method="post" th:action="'/edit/reviews-requests/' + ${rate.getId()} + '/decline'">
+                                <div class="modal fade" id="declineRequestModal" tabindex="-1" aria-labelledby="modalLabel2" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content bg-dark">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title text-light" id="modalLabel2">Confirm action</h5>
+                                                <button type="button" class="btn bg-transparent text-light" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                                            </div>
+                                            <div class="modal-body text-light">
+                                                <div class="form-group text-center">
+                                                    <label for="commentInput" class="form-label text-light">Comment on your decline action:</label>
+                                                    <textarea name="commentary" class="form-control bg-transparent text-light" id="commentInput" rows="2" aria-describedby="about" maxlength="255"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-dark border border-white" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-outline-purple">Decline</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </form>
+
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</div>

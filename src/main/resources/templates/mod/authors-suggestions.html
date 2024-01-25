@@ -1,0 +1,24 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <h1 class="text-center text-light pt-3">Authors suggestions <i class="fa-solid fa-user-plus"></i></h1>
+    <div class="d-flex justify-content-center g-4 py-2 row-cols-1 row-cols-lg-5 row ms-3 me-3 mt-3">
+        <div class="card bg-dark border border-light d-flex justify-content-center mt-2" th:href="'/tags/' + ${author.getId()}"  th:each="author : ${authors}" style="text-decoration: none;">
+            <div class="ms-2 me-auto text-light">
+                <div class="fw-bold" th:text="${author.getFullName()}"></div>
+                <span th:text="${author.getDescription()}"></span>
+                <div class="d-flex justify-content-center">
+                    <form method="post" th:action="'/edit/authors-suggestions/' + ${author.getId()} + '/add'">
+                        <button class="btn btn-primary rounded-circle d-flex justify-content-center" style="width: 30px; height: 30px"><i class="fa-solid fa-check"></i></button>
+                    </form>
+                    <form method="post" th:action="'/edit/authors-suggestions/' + ${author.getId()} + '/delete'">
+                        <button class="btn btn-danger rounded-circle d-flex justify-content-center"  style="width: 30px; height: 30px"><i class="fa-solid fa-ban"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

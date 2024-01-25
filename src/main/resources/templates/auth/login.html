@@ -1,0 +1,64 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-1">
+    <div class="container py-3">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col col-xl-10">
+                <div class="card bg-black" style="border-radius: 1rem;">
+                    <div class="row g-0">
+                        <div class="col-md-6 col-lg-5 d-none d-md-block">
+                            <img
+                                    src="/images/bg-1.png"
+                                    alt="login form"
+                                    class="img-fluid not-draggable" style="border-radius: 1rem 0 0 1rem;"
+                            />
+                        </div>
+                        <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                            <div class="card-body p-4 p-lg-5 text-black">
+                                <form th:action="@{auth}" method="post">
+                                    <h1 class="fw-normal mb-3 pb-3 text-primary">
+                                        Sign in
+                                        <i class="fa-solid fa-right-to-bracket"></i>
+                                    </h1>
+                                    <div class="form-floating form-group mb-3">
+                                        <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com" required>
+                                        <label for="floatingInput"><i class="fa-solid fa-envelope"></i> Email address </label>
+                                        <div class="invalid-feedback">
+                                            Login is incorrect
+                                        </div>
+                                    </div>
+                                    <script th:if="${param.error}">
+                                            $('#floatingInput').addClass("is-invalid")
+                                            $('#floatingInput').on('change input', function (){
+                                                $('#floatingInput').removeClass("is-invalid")
+                                            })
+                                    </script>
+                                    <div class="form-floating form-group mb-3">
+                                        <input type="password" name="password" class="form-control" id="floatingPassword" minlength="8" placeholder="Password" required>
+                                        <label for="floatingPassword"><i class="fa-solid fa-lock"></i> Password</label>
+                                        <div class="invalid-feedback">
+                                            Password is incorrect
+                                        </div>
+                                    </div>
+                                    <script th:if="${param.error}">
+                                        $('#floatingPassword').addClass("is-invalid")
+                                        $('#floatingPassword').on('change input', function (){
+                                            $('#floatingPassword').removeClass("is-invalid")
+                                        })
+                                    </script>
+                                    <div class="text-light mb-3">
+                                        <input type="checkbox" class="form-check-input rounded-circle" id="password-show">
+                                        <label class="form-check-label" for="password-show">Show password</label>
+                                    </div>
+                                    <button class="btn btn-lg btn-primary rounded-pill mb-4" type="submit">Login</button>
+                                    <p style="color: darkgray">New here? <a th:href="@{/register}">Register</a></p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

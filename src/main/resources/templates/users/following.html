@@ -1,0 +1,26 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/navbar}">
+<div layout:fragment="main_section" class="bg-gradient-3">
+    <h1 class="page-header">Followers</h1>
+
+    <h2 th:if="${users.isEmpty()}" class="text-light text-center">User is not following anyone <i class="fa-solid fa-face-surprise"></i></h2>
+    <div th:if="${!users.isEmpty()}" class="d-flex justify-content-center  row-cols-1 row-cols-lg-3" th:each="user, iter : ${users}">
+        <div class="card bg-dark border border-light mb-3" style="max-width: 540px;">
+            <a class="row g-0" th:href="'/users/' + ${user.getId()}" style="text-decoration: none">
+                <div class="user-photo-container col-md-2 d-flex align-items-center">
+                    <img th:if="${(pictureModels[iter.index].getContent() != null)}" th:src="${'data:image/'+ pictureModels[iter.index].getPicFormat() +';base64,' + pictureModels[iter.index].getContent()}" class="user-photo border border-5 border-dark rounded-circle not-draggable" >
+                    <img th:if="${(pictureModels[iter.index].getContent() == null)}" src="/images/default-profile.png" class="user-photo border border-5 border-dark rounded-circle not-draggable" >
+                </div>
+                <div class="col-md-8 d-flex align-items-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-light main-font-light" th:text="${user.getUsername()}" ></h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+</div>
