@@ -110,15 +110,16 @@ public class BookController {
 
         List<Tag> tags = tagService.getTags();
         List<Tag> rand_tags = new ArrayList<>();
-        Integer amount = 5;
-        for(var t = 0; t < amount;){
-            Random rand = new Random();
-            Tag rand_tag = tags.get(rand.nextInt(tags.size()));
-            if(!rand_tags.contains(rand_tag)){
-                rand_tags.add(rand_tag);
-                t++;
-            }
-        }
+//        Integer amount = 5;
+//        for(var t = 0; t < amount;){
+//            Random rand = new Random();
+//            Tag rand_tag = tags.get(rand.nextInt(tags.size()));
+//            if (!rand_tags.contains(rand_tag)) {
+//                rand_tags.add(rand_tag);
+//                t++;
+//            }
+//        }
+
         model.addAttribute("rand_tags", rand_tags);
 
         return "home";
